@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Odabir aerodroma</title>
+    </h:head>
+    <h:body>
+        <h1>Odabir aerodroma</h1>
+        <ul>
+            <li><h:link value="Pregled aerodroma" outcome="pregledAerodroma.xhtml" /></li>
+        </ul>
+        <h:form>
+            <h:outputLabel value="Korisnik:"/>
+            <br/>
+            <h:selectOneListbox id="korisnik" value="#{odabirAerodroma.korisnik}" size="15">
+                <f:selectItems value="#{odabirAerodroma.sviKorisnici}" var="k" itemLabel="#{k.ime} #{k.prezime}" itemValue="#{k.korisnik}"/>
+            </h:selectOneListbox>
+            <br/>
+            <h:outputLabel value="Naziv aerodroma:"/>
+            <h:inputText id="naziv" value="#{odabirAerodroma.nazivAerodroma}" />
+            <h:commandButton value="Filtriraj aerodrome" action="#{odabirAerodroma.filtrirajAerodrome}">
+                <f:ajax execute="naziv" render="aerodromi" />
+            </h:commandButton>
+            <br/>
+            <h:selectOneListbox id="aerodromi" value="#{odabirAerodroma.odabraniAerodrom}" size="15">
+                <f:selectItems value="#{odabirAerodroma.sviAerodromi}" var="a" itemLabel="#{a.icao} - #{a.naziv}" itemValue="#{a.icao}"/>
+            </h:selectOneListbox>
+            <br/>
+            <h:commandButton value="Odaberi aerodrom" action="#{odabirAerodroma.dodajAerodrom}">
+                <f:ajax execute="korisnik aerodromi naziv" render="aerodromi"/>
+            </h:commandButton>
+            <h:commandButton value="Obriši aerodrome" action="#{odabirAerodroma.obrisiAerodrome}">
+                <f:ajax execute="naziv" render="aerodromi"/> 
+            </h:commandButton>
+        </h:form>
+    </h:body>
+</html>
+

@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <h:head>
+        <title>Pregled aerodroma</title>
+    </h:head>
+    <h:body>
+        <h1>Pregled aerodroma</h1>
+        <ul>
+            <li><h:link value="Odabir aerodroma" outcome="odabirAerodroma.xhtml" /></li>
+        </ul>
+        <h:form id="obrazac">
+            <h:inputText id="trigger">
+                <f:ajax render="broj aerodromi" event="change" listener="#{pregledAerodroma.obradiPoruku()}"/>
+            </h:inputText>
+            <h:outputLabel value="Broj aerodroma:"/>
+            <h:outputText id="broj" value="#{pregledAerodroma.brojAerodroma}"/>
+            <br/>
+            <h:selectOneListbox id="aerodromi" value="#{pregledAerodroma.odabraniAerodrom}" size="10">
+                <f:selectItems value="#{pregledAerodroma.evidentiraniAerodromi}" var="a"
+                               itemLabel="#{a.icao} - #{a.naziv}" itemValue="#{a.icao}"/>
+            </h:selectOneListbox>
+            <br/>
+            <h:commandButton id="osvjezi" value=" Osvjezi " action="#{pregledAerodroma.osvjeziAerodrome}">
+                <f:ajax render="broj aerodromi"/>
+            </h:commandButton>
+            <br/>
+            <h:commandButton id="meteo" value=" Meteo podaci " action="#{pregledAerodroma.dajMeteoPodatke}">
+                <f:ajax render="odabrani temperatura vlaga tlak" execute="aerodromi"/>
+            </h:commandButton>
+            <br/>
+            <h:outputText id="odabrani" value="#{pregledAerodroma.odabraniAerodrom}"/>
+            <br/>
+            <h:outputLabel value="Temperatura: "/>
+            <h:outputText id="temperatura" value="#{pregledAerodroma.temperatura}"/>
+            <br/>
+            <h:outputLabel value="Vlaga: "/>
+            <h:outputText id="vlaga" value="#{pregledAerodroma.vlaga}"/>
+            <br/>
+            <h:outputLabel value="Tlak: "/>
+            <h:outputText id="tlak" value="#{pregledAerodroma.tlak}"/>
+            <br/>
+            <br/>
+        </h:form>
+        <script>
+            var wsocket;
+            function connect() {
+                wsocket = new WebSocket("ws://localhost:8380/djockovic_zadaca_3_3/ws");
+                wsocket.onmessage = onMessage;
+                var trigger = document.getElementById("obrazac:trigger");
+                trigger.hidden = true;
+            }
+            function onMessage(evt) {
+                console.log(evt);
+                var trigger = document.getElementById("obrazac:trigger");
+                trigger.onchange();
+            }
+            window.addEventListener("load", connect, false);
+        </script>
+    </h:body>
+</html>
+
